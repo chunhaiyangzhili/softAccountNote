@@ -31,7 +31,7 @@ namespace SoftAccountNote
         public const int HTCAPTION = 0x0002;
 
         private AccountNoteData accountNoteData = new AccountNoteData();
-        private int MonBuget = 2000;
+        private double MonBuget = 2000;
         // <summary>
         /// 用来存放DGV单元格修改之前值
         /// </summary>
@@ -166,14 +166,14 @@ namespace SoftAccountNote
 
         private bool SubmitInput()
         {
-            int tmp;
+            double tmp;
             if (txtConsume.Text.Trim() == "")
             {
                 MessageBox.Show("请输入消费金额（单位：元）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtConsume.Focus();
                 return false;
             }
-            else if (!int.TryParse(txtConsume.Text.Trim(), out tmp))
+            else if (!double.TryParse(txtConsume.Text.Trim(), out tmp))
             {
                 MessageBox.Show("请输入正常的数字而非其他字符", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtConsume.Focus();
@@ -290,8 +290,8 @@ namespace SoftAccountNote
 
         private bool ChooseMonPaint(string Mon)
         {
-            Dictionary<string, int> dicConsumeDay = new Dictionary<string, int>();
-            Dictionary<string, int> dicConsumeKind = new Dictionary<string, int>();
+            Dictionary<string, double> dicConsumeDay = new Dictionary<string, double>();
+            Dictionary<string, double> dicConsumeKind = new Dictionary<string, double>();
             DataTable aa = accountNoteData.Query("MainData");
             foreach (DataRow item in aa.Rows)
             {
@@ -299,11 +299,11 @@ namespace SoftAccountNote
                 {
                     if(dicConsumeDay.ContainsKey(item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0]))
                     {
-                        dicConsumeDay[item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0]] = int.Parse(item[1].ToString()) + dicConsumeDay[item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0]];
+                        dicConsumeDay[item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0]] = double.Parse(item[1].ToString()) + dicConsumeDay[item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0]];
                     }
                     else
                     {
-                        dicConsumeDay.Add(item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0], int.Parse(item[1].ToString()));
+                        dicConsumeDay.Add(item[4].ToString().Split(new char[] { '月' })[1].Split(new char[] { '日' })[0], double.Parse(item[1].ToString()));
                     }
                 }
             }
@@ -311,9 +311,9 @@ namespace SoftAccountNote
             ChartArea chartArea1 = chart1.ChartAreas["ChartArea1"];
             chartArea1.AxisX.Title = "日期";
             chartArea1.AxisY.Title = "花费：（元）";
-            foreach (KeyValuePair<string, int> kv in dicConsumeDay)
+            foreach (KeyValuePair<string, double> kv in dicConsumeDay)
             {
-                chart1.Series[0].Points.AddXY(Convert.ToInt32(kv.Key), Convert.ToInt32(kv.Value));
+                chart1.Series[0].Points.AddXY(Convert.ToDouble(kv.Key), Convert.ToDouble(kv.Value));
             }
             chart1.Series[0].ToolTip = "#VAL(元)";
             chart1.Series[0].Label = "#VAL(元)";
@@ -325,11 +325,11 @@ namespace SoftAccountNote
                 {
                     if (dicConsumeKind.ContainsKey(item[2].ToString()))
                     {
-                        dicConsumeKind[item[2].ToString()] = int.Parse(item[1].ToString()) + dicConsumeKind[item[2].ToString()];
+                        dicConsumeKind[item[2].ToString()] = double.Parse(item[1].ToString()) + dicConsumeKind[item[2].ToString()];
                     }
                     else
                     {
-                        dicConsumeKind.Add(item[2].ToString(), int.Parse(item[1].ToString()));
+                        dicConsumeKind.Add(item[2].ToString(), double.Parse(item[1].ToString()));
                     }
 
                 }
@@ -337,7 +337,7 @@ namespace SoftAccountNote
             chart1.Series[1]["PieLabelStyle"] = "Outside";//将文字移到外侧
             chart1.Series[1]["PieLineColor"] = "Black";//绘制黑色的连线。
 
-            foreach (KeyValuePair<string, int> kv in dicConsumeKind)
+            foreach (KeyValuePair<string, double> kv in dicConsumeKind)
             {
                 series2.Points.AddXY(kv.Key, kv.Value);
             }
@@ -359,7 +359,7 @@ namespace SoftAccountNote
 
         private bool ChooseDayPaint(string day)
         {
-            Dictionary<string, int> dicConsumeKind = new Dictionary<string, int>();
+            Dictionary<string, double> dicConsumeKind = new Dictionary<string, double>();
             DataTable aa = accountNoteData.Query("MainData");
             foreach (DataRow item in aa.Rows)
             {
@@ -367,11 +367,11 @@ namespace SoftAccountNote
                 {
                     if (dicConsumeKind.ContainsKey(item[2].ToString()))
                     {
-                        dicConsumeKind[item[2].ToString()] = int.Parse(item[1].ToString()) + dicConsumeKind[item[2].ToString()];
+                        dicConsumeKind[item[2].ToString()] = double.Parse(item[1].ToString()) + dicConsumeKind[item[2].ToString()];
                     }
                     else
                     {
-                        dicConsumeKind.Add(item[2].ToString(), int.Parse(item[1].ToString()));
+                        dicConsumeKind.Add(item[2].ToString(), double.Parse(item[1].ToString()));
                     }
 
                 }
@@ -386,9 +386,9 @@ namespace SoftAccountNote
                 //chart1.Series[0].IsValueShownAsLabel = true;
                 chartArea1.AxisX.Title = "消费类型";
                 chartArea1.AxisY.Title = "花费：（元）";
-                foreach (KeyValuePair<string, int> kv in dicConsumeKind)
+                foreach (KeyValuePair<string, double> kv in dicConsumeKind)
                 {
-                    chart1.Series[0].Points.AddXY(kv.Key, Convert.ToInt32(kv.Value));
+                    chart1.Series[0].Points.AddXY(kv.Key, Convert.ToDouble(kv.Value));
                 }
                 chart1.Series[0].ToolTip = "#VAL(元)";
                 chart1.Series[0].Label = "#VAL(元)";
@@ -397,7 +397,7 @@ namespace SoftAccountNote
                 chart1.Series[1]["PieLabelStyle"] = "Outside";//将文字移到外侧
                 chart1.Series[1]["PieLineColor"] = "Black";//绘制黑色的连线。
 
-                foreach (KeyValuePair<string, int> kv in dicConsumeKind)
+                foreach (KeyValuePair<string, double> kv in dicConsumeKind)
                 {
                     series2.Points.AddXY(kv.Key, kv.Value);
                 }
@@ -446,7 +446,7 @@ namespace SoftAccountNote
             }
             else
             {
-                MonBuget = int.Parse(txtBudget.Text.Trim());
+                MonBuget = double.Parse(txtBudget.Text.Trim());
                 DateTime now = DateTime.Now;
                 string MonDate = now.GetDateTimeFormats('y')[0].ToString();//2005年11月
                 DataTable bb = accountNoteData.MonQuery("BaseData", MonDate);
@@ -467,7 +467,6 @@ namespace SoftAccountNote
                         MessageBox.Show("设置预算金额成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-                Console.WriteLine("1111");
             }
         }
 
@@ -483,12 +482,12 @@ namespace SoftAccountNote
             tbcAllConsume.Visible = true;
             tbcConfig.Visible = false;
             tbcAllConsume.Dock = DockStyle.Fill;
-            Dictionary<string, int> dicConsumeDay = new Dictionary<string, int>();
-            Dictionary<string, int> dicConsumeKind = new Dictionary<string, int>();
+            Dictionary<string, double> dicConsumeDay = new Dictionary<string, double>();
+            Dictionary<string, double> dicConsumeKind = new Dictionary<string, double>();
             DataTable aa = accountNoteData.Query("MainData");
             //accountNoteData.Close();
-            int momAllConsume = 0;
-            int dayAllConsume = 0;
+            double momAllConsume = 0;
+            double dayAllConsume = 0;
             DateTime now = DateTime.Now;
             string MonDate = now.GetDateTimeFormats('y')[0].ToString();//2005年11月
             int days = DateTime.DaysInMonth(int.Parse(now.Year.ToString()), int.Parse(now.Month.ToString()));
@@ -497,11 +496,11 @@ namespace SoftAccountNote
             {
                 if (now.ToLongDateString().ToString().Split(new char[] { '月' })[0] == item[4].ToString().Split(new char[] { '月' })[0])
                 {
-                    momAllConsume += int.Parse(item[1].ToString()); 
+                    momAllConsume += double.Parse(item[1].ToString()); 
                 }
                 if (now.ToLongDateString().ToString() == item[4].ToString())
                 {
-                    dayAllConsume += int.Parse(item[1].ToString());
+                    dayAllConsume += double.Parse(item[1].ToString());
                 }
             }
             lblMonConsume.Text = momAllConsume.ToString();
@@ -522,7 +521,7 @@ namespace SoftAccountNote
                 }
             }
             string[] x = {"已消费额度", "剩余额度" };
-            int[] y = { momAllConsume, MonBuget-momAllConsume};
+            double[] y = { momAllConsume, MonBuget-momAllConsume};
             chart2.Series[0].XValueType = ChartValueType.String;  //设置X轴上的值类型
             //chart2.Series[0].Label = "#PERCENT";
             chart2.Series[0].Label = "#PERCENT";
